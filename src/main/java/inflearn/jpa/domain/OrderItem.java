@@ -1,6 +1,7 @@
 package inflearn.jpa.domain;
 
 
+import inflearn.jpa.domain.item.Item;
 import jakarta.persistence.*;
 import lombok.Data;
 
