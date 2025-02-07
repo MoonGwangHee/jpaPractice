@@ -4,6 +4,8 @@ import inflearn.jpa.domain.Category;
 import inflearn.jpa.exception.NotEnoughStockException;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +13,7 @@ import java.util.List;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "dtype")
-@Data
+@Getter @Setter
 public abstract class Item {
 
     @Id @GeneratedValue
