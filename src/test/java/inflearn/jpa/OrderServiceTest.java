@@ -11,12 +11,14 @@ import inflearn.jpa.repository.OrderRepository;
 import inflearn.jpa.service.OrderService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.util.AssertionErrors.assertEquals;
+import static org.springframework.test.util.AssertionErrors.fail;
 
 @SpringBootTest
 @Transactional
@@ -53,6 +55,49 @@ public class OrderServiceTest {
 
 
     }
+
+    @Test
+    public void 상품주문_재고수량초과() throws Exception {
+
+        // Given
+        Member member = createMember();
+        Item item = createBook("시골 JPA", 10000, 10);
+
+        int orderCount = 11;    // 재고 보다 많은 수량
+
+        // When
+        IllegalStateException exception = Assertions.assertThrows(IllegalStateException.class, () -> {
+            orderService.order(member.getId(), item.getId(), orderCount);
+        });
+
+        // 예외 메시지 검증
+        Assertions.assertEquals("재고 수량 부족!!!!!!", exception.getMessage());
+    }
+
+
+
+    @Test
+    public void 주문취소() {
+
+        // Given
+        Member member = createMember();
+        Item item = createBook("시골 JPA", 10000, 10);
+        int orderCount = 2;
+
+        Long orderId = orderService.order(member.getId(), item.getId(), orderCount);
+
+        // When
+        orderService.cancelOrder(orderId);
+
+        // Then
+        Order getOrder = orderRepository.findOne(orderId);
+
+        assertEquals("주문 취소시 상태는 CANCEL 입니다.", OrderStatus.CANCEL, getOrder.getStatus());
+        assertEquals("주문이 취소된 상품은 그만큼 재고가 증가해야 한다.", 10, item.getStockQuantity());
+    }
+
+
+
 
 
     private Member createMember() {
