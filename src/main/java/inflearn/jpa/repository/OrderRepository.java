@@ -29,8 +29,9 @@ public class OrderRepository {
     }
 
 
+
     // JPA Criteria 표준 스택 -> 실무에서 사용하기에 너무 복잡, -> QueryDSL (대안)
-    public List<Order> findAllByCriteria(OrderSearch orderSearch) {
+    public List<Order> findAll(OrderSearch orderSearch) {
         
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Order> cq = cb.createQuery(Order.class);
