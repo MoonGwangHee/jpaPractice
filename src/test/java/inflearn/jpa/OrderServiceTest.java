@@ -7,6 +7,7 @@ import inflearn.jpa.domain.Order;
 import inflearn.jpa.domain.OrderStatus;
 import inflearn.jpa.domain.item.Book;
 import inflearn.jpa.domain.item.Item;
+import inflearn.jpa.exception.NotEnoughStockException;
 import inflearn.jpa.repository.OrderRepository;
 import inflearn.jpa.service.OrderService;
 import jakarta.persistence.EntityManager;
@@ -18,7 +19,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.util.AssertionErrors.assertEquals;
-import static org.springframework.test.util.AssertionErrors.fail;
 
 @SpringBootTest
 @Transactional
@@ -66,12 +66,12 @@ public class OrderServiceTest {
         int orderCount = 11;    // 재고 보다 많은 수량
 
         // When
-        IllegalStateException exception = Assertions.assertThrows(IllegalStateException.class, () -> {
+        NotEnoughStockException exception = Assertions.assertThrows(NotEnoughStockException.class, () -> {
             orderService.order(member.getId(), item.getId(), orderCount);
         });
 
         // 예외 메시지 검증
-        Assertions.assertEquals("재고 수량 부족!!!!!!", exception.getMessage());
+        Assertions.assertEquals("더 많은 재고량이 필요합니다.", exception.getMessage());
     }
 
 
